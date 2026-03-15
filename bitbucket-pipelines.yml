@@ -1,0 +1,68 @@
+image: python:3.11
+
+definitions:
+  caches:
+    pipenv: ~/.local/share/virtualenvs
+
+  steps:
+
+    # ── Smoke Tests ──────────────────────────────────────────────────────────
+    # Runs on every Pull Request — fast check (3 key tests only)
+    - step: &smoke
+        name: "Smoke Tests"
+        caches:
+          - pipenv
+        script:
+          - pip install pipenv
+          - pipenv install --ignore-pipfile
+          - pipenv run playwright install --with-deps chromium
+          - pipenv run pytest tests/Account.py
+              -v -s
+              -k "T001 or T002 or T003"
+              --brows chromium
+              --headless
+              --url $QA_URL
+              --alluredir=allure-results
+        artifacts:
+          - allure-results/**
+
+    # ── Full Regression ───────────────────────────────────────────────────────
+    # Runs nightly on QA branch — all 29 tests
+    - step: &regression
+        name: "Full Regression"
+        caches:
+          - pipenv
+        script:
+          - pip install pipenv
+          - pipenv install --ignore-pipfile
+          - pipenv run playwright install --with-deps chromium
+          - pipenv run pytest tests
+              -v -s
+              --brows chromium
+              --headless
+              --url $QA_URL
+              --alluredir=allure-results
+              --reruns 1
+              --reruns-delay 2
+        artifacts:
+          - allure-results/**
+
+pipelines:
+
+  # ── Runs automatically on every Pull Request ──────────────────────────────
+  pull-requests:
+    '**':
+      - step: *smoke
+
+  # ── Runs automatically on every push to QA branch ─────────────────────────
+  branches:
+    QA:
+      - step: *regression
+
+  # ── Manual trigger from Bitbucket UI ──────────────────────────────────────
+  custom:
+    run-smoke:
+      - step: *smoke
+
+    run-full-regression:
+      - step: *regression
