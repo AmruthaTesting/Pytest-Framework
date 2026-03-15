@@ -1,0 +1,41 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+black = "==25.1.0"
+pycodestyle = "*"
+
+[packages]
+allure-pytest = "==2.14.3"
+allure-python-commons = "==2.14.3"
+boto3 = "==1.38.35"
+botocore = "==1.38.46"
+essential-generators = "==1.0"
+faker = "==37.4.0"
+future = "==1.0.0"
+openpyxl = "==3.1.5"
+playwright = "==1.55.0"
+pytest = "==8.4.2"
+pytest-base-url = "==2.1.0"
+pytest-playwright = "==0.7.1"
+pytest-rerunfailures = "==16.1"
+pytest-xdist = "==3.8.0"
+python-dateutil = "==2.9.0.post0"
+python-dotenv = "==1.1.1"
+requests = "==2.32.5"
+reportlab = "==4.4.7"
+selenium = "==4.37.0"
+waiting = "==1.5.0"
+webdriver-manager = "==4.0.2"
+python-docx = "==1.2.0"
+pillow = "==11.3.0"
+lxml = "==6.0.2"
+typing-extensions = "==4.15.0"
+
+[requires]
+python_version = "3.11"
+
+[pipenv]
+allow_prereleases = true

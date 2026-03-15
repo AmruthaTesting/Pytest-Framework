@@ -1,0 +1,29 @@
+# Allure results and reports
+allure-results/
+allure-report/
+
+# Screenshots
+*.png
+*.jpg
+
+# Python cache and virtualenvs
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+.env
+
+# Logs
+*.log
+logs/
+
+# IDE settings
+.idea/
+.vscode/
+
+# Downloads
+downloads-folder/
+
+# OS files
+.DS_Store
+Thumbs.db
