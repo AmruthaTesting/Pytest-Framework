@@ -2,16 +2,22 @@ image: python:3.11
 
 definitions:
   caches:
-    pipenv: ~/.local/share/virtualenvs
+    # Fix: custom cache must define the actual path
+    pipenv-cache:
+      key:
+        files:
+          - Pipfile.lock
+      path: ~/.local/share/virtualenvs
 
   steps:
 
     # ── Smoke Tests ──────────────────────────────────────────────────────────
-    # Runs on every Pull Request — fast check (3 key tests only)
+    # Runs on every Pull Request — fast check (T001, T002, T003 only)
     - step: &smoke
         name: "Smoke Tests"
         caches:
-          - pipenv
+          - pip
+          - pipenv-cache
         script:
           - pip install pipenv
           - pipenv install --ignore-pipfile
@@ -27,11 +33,12 @@ definitions:
           - allure-results/**
 
     # ── Full Regression ───────────────────────────────────────────────────────
-    # Runs nightly on QA branch — all 29 tests
+    # Runs on every push to QA branch — all 29 tests
     - step: &regression
         name: "Full Regression"
         caches:
-          - pipenv
+          - pip
+          - pipenv-cache
         script:
           - pip install pipenv
           - pipenv install --ignore-pipfile
@@ -49,17 +56,17 @@ definitions:
 
 pipelines:
 
-  # ── Runs automatically on every Pull Request ──────────────────────────────
+  # ── Runs automatically on every Pull Request ─────────────────────────────
   pull-requests:
     '**':
       - step: *smoke
 
-  # ── Runs automatically on every push to QA branch ─────────────────────────
+  # ── Runs automatically on every push to QA branch ────────────────────────
   branches:
     QA:
       - step: *regression
 
-  # ── Manual trigger from Bitbucket UI ──────────────────────────────────────
+  # ── Manual trigger from Bitbucket UI ─────────────────────────────────────
   custom:
     run-smoke:
       - step: *smoke
